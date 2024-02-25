@@ -1,0 +1,228 @@
+jQuery(function ($) {
+	$.exists = function (selector) {
+		return $(selector).length > 0;
+	};
+	var inputSpinner = '.js-ipnut-spinner';
+	function initInputSpinner() {
+		var spinner = function spinner() {
+			var $this = $(this);
+			var $minus = $this.find('.js-input-spinner-minus');
+			var $plus = $this.find('.js-input-spinner-plus');
+			var $counter = $this.find('.js-input-spinner-counter');
+			var step = parseInt($counter.attr('step'));
+			var min = parseInt($counter.attr('min'));
+			var max = parseInt($counter.attr('max'));
+			$counter.off('input');
+			$minus.off('click');
+			$plus.off('click');
+			$minus.on('click', function (event) {
+				var val = parseInt($counter.val());
+				val = val - step;
+				if (val <= min) val = min;
+				$counter.val(val);
+				$counter.trigger('change');
+			});
+			$plus.on('click', function (event) {
+				var val = parseInt($counter.val());
+				val = val + step;
+				if (max && val >= max) val = max;
+				$counter.val(val);
+				$counter.trigger('change');
+			});
+		};
+		$.each($(inputSpinner), spinner);
+	}
+	if ($.exists(inputSpinner)) {
+		initInputSpinner();
+	}
+	var range_sliders = document.getElementsByClassName('js-range-slider-c');
+	[].slice.call(range_sliders).forEach(function (slider, index) {
+		var min = parseFloat(slider.dataset.min);
+		var max = parseFloat(slider.dataset.max);
+		var min_val = parseFloat(slider.dataset.min_val);
+		var max_val = parseFloat(slider.dataset.max_val);
+		var step = parseFloat(slider.dataset.step);
+		var decimals = parseInt(slider.dataset.decimals);
+		min_val = min_val || min;
+		max_val = max_val || max;
+		noUiSlider.create(slider, {
+			start: [min_val, max_val],
+			connect: true,
+			step: step,
+			tooltips: [
+				wNumb({
+					decimals: decimals
+				}),
+				wNumb({
+					decimals: decimals
+				})
+			],
+			format: wNumb({
+				decimals: decimals
+			}),
+			range: {
+				'min': min,
+				'max': max
+			},
+			pips: {
+				mode: 'range',
+				stepped: true,
+				density: 3
+			}
+		});
+		slider.noUiSlider.on('update', function (values) {
+			var $slider = $(slider),
+				$min_input = $slider.parent().find('input[name^="min_"]'),
+				$max_input = $slider.parent().find('input[name^="max_"]');
+			$min_input.val(values[0]);
+			$max_input.val(values[1]);
+			if (values[0] <= min) $min_input.attr('disabled', 'disabled');
+			else $min_input.removeAttr('disabled');
+			if (values[1] >= max) $max_input.attr('disabled', 'disabled');
+			else $max_input.removeAttr('disabled');
+		});
+	});
+	if ($.exists('.woocommerce-cart-form')) $('.js-input-spinner-counter').on('change', function () {
+		$('.woocommerce-cart-form :input[name="update_cart"]').prop('disabled', false).attr('aria-disabled', false).click();
+	});
+	if ($.exists('.add_to_cart_button')) $('.js-input-spinner-counter').on('change', function () {
+		$('.add_to_cart_button[data-product_id="' + $(this).data('pid') + '"]').attr('data-quantity', $(this).val());
+	});
+	if ($.exists('.filter__item-categories')) $('.custom-checkbox').on('change', function () {
+		var $this = $(this),
+			$input = $this.closest('.filter__item-categories').find('input[type="hidden"]'),
+			current = $input.val(),
+			value = $this.val(),
+			index = -1;
+		current = current ? current.split(',') : [];
+		index = current.indexOf(value);
+		if (index !== -1) {
+			current = _.without(current, value);
+		} else {
+			current.push(value);
+		}
+		$input.val(current.join(','));
+		$this.closest('p').toggleClass('pressed');
+		if (current.length === 0) {
+			$input.attr('disabled', 'disabled');
+		} else {
+			$input.removeAttr('disabled');
+		}
+	});
+	$('#spf_submit').on('click', function (e) {
+		e.preventDefault();
+		$('#soo_product_filter').submit();
+	});
+	$('#spf_reset').on('click', function (e) {
+		e.preventDefault();
+		$('.js-range-slider-c').each(function () {
+			this.noUiSlider.set([parseFloat(this.dataset.min), parseFloat(this.dataset.max)]);
+		});
+		$('.custom-checkbox:checked').prop('checked', false).trigger('change');
+		$('.filter__item.selected select').val('').trigger('change');
+		$('#soo_product_filter').submit();
+	});
+	$('#view_list').on('click', function (e) {
+		e.preventDefault();
+		$('#soo_product_filter').find('input[name="view"]').val('list').prop('disabled', true);
+		$('#soo_product_filter').submit();
+	});
+	$('#view_block').on('click', function (e) {
+		e.preventDefault();
+		$('#soo_product_filter').find('input[name="view"]').val('block').prop('disabled', false);
+		$('input[name="orderby"]').prop('disabled', true);
+		$('#soo_product_filter').submit();
+	});
+	$('#view_new').on('click', function (e) {
+		e.preventDefault();
+		var $this = $(this),
+			$prct = $('input[name="product_cat"]');
+		if ($this.hasClass('is-active')) {
+			$prct.val($prct.val().replace(' ' + $this.data('slug'), ''));
+		} else {
+			if ($prct.val()) $prct.val($prct.val() + ' ' + $this.data('slug'));
+			else $prct.val($this.data('slug')).prop('disabled', false);
+		}
+		$('#soo_product_filter').submit();
+	});
+	$('.list-filter a').on('click', function (e) {
+		e.preventDefault();
+		$('input[name="orderby"]').val($(this).data('orderby')).prop('disabled', false);
+		$('#soo_product_filter').submit();
+	});
+	$('.products-list__count a').on('click', function (e) {
+		e.preventDefault();
+		$('.products-list__count form input[name="pp"]').val($(this).text());
+		$('.products-list__count form').trigger('submit');
+	});
+	$('.catalog-request__form').submit(function (e) {
+		e.preventDefault();
+		var f = this;
+		var frm = $(this);
+		var fdata = new FormData(f);
+		const response = $('.catalog-request-message');
+		fdata.append('action', 'amina_reqcat');
+		fdata.append('nnc', amina.nnc);
+		frm.find('[type="submit"]').attr('disabled', true);
+		response.text('');
+		$.post({
+			url: amina.ajx,
+			data: fdata,
+			processData: false,
+			contentType: false,
+			cache: false,
+			dataType: 'json'
+		}).done(function (d) {
+			ym(34846415, 'reachGoal', 'price-mail');
+			if (d.error) alert(d.message);
+			else {
+				f.reset();
+				response.text('Мы отправили прайс-лист на указанный email.');
+			}
+		}).fail(function () {
+			alert('error');
+		}).always(function () {
+			frm.find('[type="submit"]').attr('disabled', false);
+		});
+	});
+	const menuBtn = $('.show-contacts'), menu = $('.addresses__box');
+	menuBtn.on('click', function () {
+		if ($(this).hasClass('active')) $(this).removeClass('active');
+		else $(this).addClass('active');
+	});
+	$(document).click(function (e) {
+		if (!menuBtn.is(e.target) && !menu.is(e.target) && menu.has(e.target).length === 0) menuBtn.removeClass('active');
+	});
+	const orderBtn = document.querySelectorAll('#place_order');
+	orderBtn.forEach(function (el) {
+		el.addEventListener('click', function sendMail(event) {
+			ym(34846415, 'reachGoal', 'cart-order');
+		}, false);
+	});
+	document.addEventListener('wpcf7mailsent', function sendMail(event) {
+		if ('753' == event.detail.contactFormId) ym(34846415, 'reachGoal', 'form-send');
+		if ('757' == event.detail.contactFormId) ym(34846415, 'reachGoal', 'one-click-order');
+		if ('744' == event.detail.contactFormId) ym(34846415, 'reachGoal', 'production-order');
+	}, false);
+	$('body').on('added_to_cart', function () {
+		$(this).append('<div class="added_cart_popup">Товар добавлен в корзину</div>');
+		setTimeout(function () {
+			$('.added_cart_popup').remove();
+		}, 2000);
+	});
+
+	const filterContainer = $('.filter');
+
+	if (filterContainer.length) {
+		const filterItemCount = document.querySelectorAll('.filter__item').length - 2;
+		const filterItem = document.querySelector('.filter__item');
+		
+		if (filterItemCount === 2 || filterItemCount === 3) {
+			filterContainer.addClass('filter-3-items')
+		} else if (filterItemCount === 4) {
+			filterContainer.addClass('filter-4-items')
+		}
+
+		filterItemCount < 0 && filterItem.classList.contains('buttons') ? document.querySelector('.filter').style.display = 'none' : false;
+	}
+});
