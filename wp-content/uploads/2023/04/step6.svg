@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" fill="none">
+  <mask id="path-1-inside-1_475_1685" fill="white">
+    <rect y="30" width="80" height="12" rx="2"></rect>
+  </mask>
+  <rect y="30" width="80" height="12" rx="2" stroke="#408858" stroke-width="6" stroke-linejoin="round" mask="url(#path-1-inside-1_475_1685)"></rect>
+  <mask id="path-2-inside-2_475_1685" fill="white">
+    <rect x="15" width="50" height="18" rx="2"></rect>
+  </mask>
+  <rect x="15" width="50" height="18" rx="2" stroke="#408858" stroke-width="6" stroke-linejoin="round" mask="url(#path-2-inside-2_475_1685)"></rect>
+  <mask id="path-3-inside-3_475_1685" fill="white">
+    <rect y="48" width="80" height="12" rx="2"></rect>
+  </mask>
+  <rect y="48" width="80" height="12" rx="2" stroke="#408858" stroke-width="6" stroke-linejoin="round" mask="url(#path-3-inside-3_475_1685)"></rect>
+  <mask id="path-4-inside-4_475_1685" fill="white">
+    <rect x="10" y="68" width="60" height="12" rx="2"></rect>
+  </mask>
+  <rect x="10" y="68" width="60" height="12" rx="2" stroke="#408858" stroke-width="6" stroke-linejoin="round" mask="url(#path-4-inside-4_475_1685)"></rect>
+  <line x1="46.5" y1="17.5" x2="46.5" y2="22.5" stroke="#408858" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="33.5" y1="17.5" x2="33.5" y2="22.5" stroke="#408858" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="17.1213" y1="6" x2="27" y2="15.8787" stroke="#408858" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="53.1213" y1="2" x2="63" y2="11.8787" stroke="#408858" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="64.0428" y1="16.572" x2="71.572" y2="29.9572" stroke="#408858" stroke-width="3" stroke-linecap="square"></line>
+  <line x1="8.84182" y1="61.0525" x2="11.0525" y2="69.1582" stroke="#408858" stroke-width="3" stroke-linecap="square"></line>
+  <line x1="71.0914" y1="60.819" x2="68.819" y2="69.9086" stroke="#408858" stroke-width="3" stroke-linecap="square"></line>
+  <line x1="15.6176" y1="17.0294" x2="9.02941" y2="29.3824" stroke="#408858" stroke-width="3" stroke-linecap="square"></line>
+  <line x1="26.1213" y1="2" x2="40" y2="15.8787" stroke="#408858" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="40.1213" y1="2" x2="54" y2="15.8787" stroke="#408858" stroke-width="3" stroke-linecap="round"></line>
+</svg>
